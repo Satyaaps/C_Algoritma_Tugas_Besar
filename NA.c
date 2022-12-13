@@ -1052,6 +1052,7 @@ void bensin_nonsubsidi_pertamina_dex(){
 		float uang;
 		float total;
 		float hasil;
+		float total_final;
 		system("cls");
 	    printf("======================================================\n");
         printf("||              Program kalkulator pada             ||\n");
@@ -1074,10 +1075,16 @@ void bensin_nonsubsidi_pertamina_dex(){
         	printf("||__________________________________________________||\n");
 			printf("|| Uang = %.2f\n", total);
 		}
-		printf("|| Yang Perlu dibayar : %.2f\n\n", total);
+		total_final = (total - 100);
+			system("cls");
+			printf("======================================================\n");
+        	printf("||              Program kalkulator pada             ||\n");
+        	printf("||           Stasiun Pengisian Bahan Bakar          ||\n");
+        	printf("||__________________________________________________||\n");
+			printf("|| Uang = %.2f\n", total_final);
+			printf("|| Yang Perlu dibayar : %.2f\n\n", total_final);
+
 		//printf("|| Ingin Membuat Struck Dari Pembelian Tadi? (Y/T)");
-
-
 		while(cekmengulang('y','t', "\n\nApakah Anda Ingin Melakukan Penghitungan Kembali? (Y/T) : "));
 }
 
@@ -1090,7 +1097,4 @@ int main(){
     jenis_fasilitas();
     system("pause");
     system("cls");
-
-
-
 }
