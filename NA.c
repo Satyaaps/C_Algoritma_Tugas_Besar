@@ -36,12 +36,12 @@ void keluar(){
 	system("exit");
 }
 
-/*void pilihan_keluar(){
+void pilihan_keluar(){
 
 	printf("Ingin Mengulang Program? (Y/T)");
 
 }
-*/
+
 
 float validasi(){
 	float inputan;
@@ -1087,6 +1087,7 @@ void bensin_nonsubsidi_pertamina_dex(){
 		//printf("|| Ingin Membuat Struck Dari Pembelian Tadi? (Y/T)");
 		while(cekmengulang('y','t', "\n\nApakah Anda Ingin Melakukan Penghitungan Kembali? (Y/T) : "));
 }
+
 
 int main(){
     
