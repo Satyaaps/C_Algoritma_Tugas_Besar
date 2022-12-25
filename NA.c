@@ -5,6 +5,8 @@
 
 #define batas_pembelian 120
 #define data_pembelian 115
+#define MAX_LENGTH 100
+//#define MAX_PURCHASE 120
 
 float validasi();
 void jenis_fasilitas();
@@ -36,11 +38,35 @@ void keluar(){
 	system("exit");
 }
 
-void pilihan_keluar(){
+// struktur data untuk menyimpan data pembeli
+typedef struct {
+	char plate[MAX_LENGTH]; // nomor plat
+	int purchase; // jumlah pembelian
+	int max_purchase;
+} Customer;
 
-	printf("Ingin Mengulang Program? (Y/T)");
+int membuka_file(){
+	FILE *fp = fopen("customers.txt", "r"); 	// buka file teks
 
+	if (fp == NULL) { // cek apakah file dapat dibuka atau tidak
+	printf("File Tidak Ada\n");
+	return 1;
+
+	}Customer c; // deklarasi variabel c sebagai tipe data Customer
+
+	// baca data dari file teks sampai akhir file
+	while (fscanf(fp, "%s %d", c.plate, &c.purchase) != EOF) {
+		if (c.purchase > c.max_purchase) { // cek apakah pembelian melebihi batas maksimum
+		printf("Pembelian melebihi batas maksimum!\n");
+		} else {
+		printf("Nomor plat: %s\n", c.plate);
+		printf("Jumlah pembelian: %d liter\n", c.purchase);
+		}
+	}
+	fclose(fp);
+	return 0;
 }
+
 
 
 float validasi(){
