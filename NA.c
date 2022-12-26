@@ -25,6 +25,7 @@ int proses_read_data_tmp(), cek_jumlah_pembelian(), cek_jumlah_pembelian_edit(),
 void setDefaultDataTmp(), lihat_data_pembeli(), tambah_data_pembeli(), perbaharui_data_pembeli(), menghapus_data_pembeli();
 void proses_tambah_data(), proses_lihat_data(), proses_perbaharui_data(), proses_hapus_data();
 
+
 struct harga_bensin{
 	int pertalite;
 	int solar;
@@ -39,6 +40,10 @@ struct contact {
   int jumlah_pembelian;
   char plat[MAX_LENGTH];
 };
+
+/*void notaTagihan(char *plat, char *jenis, char *batas, float total_final in){
+
+}*/
 
 float input(int desimal, int min, int batas_akhir){
     char masukan[100];
@@ -321,7 +326,7 @@ void tambah_data_pembeli(){
 	printf("|============  TAMBAH DATA MAHASISWA  =============|\n");
 	printf("|==================================================|\n");
 	printf("    Tambah Data \n");
-	printf("    * Masukan jumlah pembelian  : "); scanf("%d", data.jumlah_pembelian);
+	printf("    * Masukan jumlah pembelian  : "); scanf("%d", statusPembelian);
 
     statusPembelian = cek_jumlah_pembelian(data, data_tmp, jumlah);
     while(statusPembelian == 1){
@@ -1519,15 +1524,24 @@ void uang_nonsubsidi_pertamina_dex(){
 }
 void bensin_nonsubsidi_pertamina_dex(){
 		float inputan;
+		int inputan1;
+		int inputan2;
 		float uang;
 		float total;
 		float hasil;
 		float total_final;
+		float jumlah_uang_diterima;
+		char nama[100];
+		char plat[100];
+		char jenis[] = "Pertamina Dex";
+		char batas[] = "Belum ditetapkan";
+		char harga[] = "18.000";
 		system("cls");
 	    printf("======================================================\n");
         printf("||              Program kalkulator pada             ||\n");
         printf("||           Stasiun Pengisian Bahan Bakar          ||\n");
         printf("||__________________________________________________||\n");
+		printf("|| Plat Nomor 			: ");fflush(stdin); scanf("%[^\n]", plat); getchar();
 		printf("|| Masukan Jumlah Liter : ");
 		inputan = validasi();
         fflush(stdin);
@@ -1538,14 +1552,14 @@ void bensin_nonsubsidi_pertamina_dex(){
 		total = 0;
 		while((total<=uang)){
 			system("cls");
-			total = total + 100;
+			total = total + 500;
 			printf("======================================================\n");
         	printf("||              Program kalkulator pada             ||\n");
         	printf("||           Stasiun Pengisian Bahan Bakar          ||\n");
         	printf("||__________________________________________________||\n");
 			printf("|| Uang = %.2f\n", total);
 		}
-		total_final = (total - 100);
+		total_final = (total - 500);
 			system("cls");
 			printf("======================================================\n");
         	printf("||              Program kalkulator pada             ||\n");
@@ -1553,11 +1567,80 @@ void bensin_nonsubsidi_pertamina_dex(){
         	printf("||__________________________________________________||\n");
 			printf("|| Uang = %.2f\n", total_final);
 			printf("|| Yang Perlu dibayar : %.2f\n\n", total_final);
+			system("pause");
+		printf("|| Ingin Membuat Struck Dari Pembelian Tadi? (Y/T)"); scanf("%d", &inputan1);
+			if(inputan1 == 'Y' || inputan1 == 'y'){
+			system("cls");
+			printf("======================================================\n");
+        	printf("||              Program kalkulator pada             ||\n");
+        	printf("||           Stasiun Pengisian Bahan Bakar          ||\n");
+        	printf("||__________________________________________________||\n");
+			printf("||                                                  ||\n");
+			printf("|| Masukan Jenis Pembayaran :                       ||\n");
+			printf("||    1. Debit                                      ||\n");
+	        printf("||    2. Cash                                       ||\n");
+        	printf("||                                         0. keluar||\n");
+			printf("======================================================\n");
+			printf(">> "); scanf("%d", &inputan2);
+			if(inputan2 == 1){
+				printf("|| Nama : "); fflush(stdin); scanf("%[^\n]", &nama);getchar();
+			}
+			else if(inputan2 == 2){
+				printf("|| Masukan Jumlah Uang : "); scanf("%f", &jumlah_uang_diterima);
+			}
 
-		//printf("|| Ingin Membuat Struck Dari Pembelian Tadi? (Y/T)");
-		while(cekmengulang('y','t', "\n\nApakah Anda Ingin Melakukan Penghitungan Kembali? (Y/T) : "));
+			}else if(inputan1 == 'N'|| inputan1 == 'n'){
+				system("cls");
+				printf("======================================================\n");
+				printf("||              Program kalkulator pada             ||\n");
+				printf("||           Stasiun Pengisian Bahan Bakar          ||\n");
+				printf("||__________________________________________________||\n");
+				while(cekmengulang('y','t', "|| Apakah Anda Ingin Melakukan Penghitungan Kembali? (Y/T) : "));
+			}
+			struckPembayaranBensin(plat, inputan, jenis, batas, total_final, jumlah_uang_diterima, nama, harga);
+			
+		
 }
 
+
+void struckPembayaranBensin(char *plat, float inputan, char *jenis, char *batas, float total_final, float jumlah_uang_diterima, char *nama, char *harga){
+
+        time_t t;
+        t = time(NULL);
+        struct tm tm = *localtime(&t);
+        float kembalian;
+        float finaltotal;
+        kembalian = jumlah_uang_diterima - total_final;
+        
+        system("cls");
+	    printf("===========================================================\n");
+        printf("||                 Program kalkulator pada               ||\n");
+        printf("||              Stasiun Pengisian Bahan Bakar            ||\n");
+        printf("||_______________________________________________________||\n");
+        printf("||                      NOTA TAGIHAN                     ||\n");
+		printf("||=======================================================||\n");
+		printf("||                       PERTAMINA                       ||\n");
+		printf("|| SPBU 54.803.02                                        ||\n");
+		printf("|| JL, I Gusti Ngurah Rai                                ||\n");
+		printf("|| Jimbaran - Bali                                       ||\n");
+		printf("|| Telp. (0361) 705034                                   ||\n");
+		printf("||=======================================================||\n");
+        printf("|| Nama             : %s\n", nama);
+		printf("|| Plat Kendaraan   : %s\n", plat);
+        printf("|| Jenis Bensin     : %s\n", jenis);
+        printf("|| Batas Pembelian  : %s\n", batas);
+        printf("|| Tanggal          : %d-%d-%d\n", tm.tm_mday, tm.tm_mon+1, tm.tm_year+1900);
+        printf("===========================================================\n");
+        printf("|| Harga per Liter  : Rp. %.2f\n", harga);
+        printf("|| Jumlah pembelian : %.2f Liter\n", inputan);
+        printf("|| Jumlah           : Rp. %.2f\n", jumlah_uang_diterima);
+        printf("===========================================================\n");		
+        printf("|| Total            : Rp. %.2f\n", finaltotal);
+		printf("|| Kembalian        : Rp. %.2f\n", kembalian);
+        printf("===========================================================\n");
+        system("pause");
+        cekmengulang('y','t', "|| Apakah Anda Ingin Melakukan Penghitungan Kembali? (Y/T) : ");
+}
 
 int main(){
     
