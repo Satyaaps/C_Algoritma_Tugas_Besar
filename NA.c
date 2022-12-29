@@ -5,13 +5,13 @@
 #include <string.h>
 #include <stdbool.h>
 #include <conio.h>
-
+// 
 #define batas_pembelian 120
 //#define jumlah_pembelian 115
 #define MAX_LENGTH 10
 
 float validasi();
-void jenis_fasilitas(), menu_pembeli(), lihat_data_pembeli(), tambah_data_pembeli(), perbaharui_data_pembeli(), menghapus_data_pembeli();
+void jenis_fasilitas(), data_pembeli(), lihat_data_pembeli(), tambah_data_pembeli(), perbaharui_data_pembeli(), menghapus_data_pembeli();
 void validasi_jenis_bensin(), jenis_bensin(), keluar(), pilihan_ulang(), menu_pilihan();
 void pilihan_kendaraan_pertalite(), pilihan_cc_mobil_pertalite(), pilihan_cc_motor_pertalite(), pilihan_cc_truck_pertalite();
 void pilihan_kendaraan_solar(), pilihan_cc_mobil_solar(), pilihan_cc_motor_solar(), pilihan_cc_motor_solar();
@@ -27,6 +27,13 @@ int proses_read_data_tmp(), cek_jumlah_pembelian(), cek_jumlah_pembelian_edit(),
 void setDefaultDataTmp(), lihat_data_pembeli(), tambah_data_pembeli(), perbaharui_data_pembeli(), menghapus_data_pembeli();
 void proses_tambah_data(), proses_lihat_data(), proses_perbaharui_data(), proses_hapus_data();
 
+struct datapembeli{
+    long ph;
+    char name[20],add[20],email[30];
+} list;
+char query[20],name[20];
+FILE *fp, *ft;
+int i,n,ch,l,found;
 
 struct harga_bensin{
 	int subsidi_pertalite;
@@ -44,6 +51,7 @@ struct contact {
   int jumlah_pembelian;
   char plat[MAX_LENGTH];
 };
+
 
 
 float input(int desimal, int min, int batas_akhir){
@@ -166,6 +174,11 @@ int pertanyaanHapus(){
     return hasil;
 }
 
+void keluar(){
+	system("cls");
+	system("exit");
+}
+
 void setDefaultDataTmp(struct contact data_tmp[]){
     int i;
     for(i = 0; i < batas_pembelian; i++){
@@ -286,152 +299,7 @@ int validasiplat(char masukan[]){
     }
 }
 
-void tambah_data_pembeli(){
-    int statusPembelian;
-    int statusPlat;
-    struct contact data;
-    struct contact data_tmp[100];
-    setDefaultDataTmp(data_tmp);
 
-    int jumlah = proses_read_data_tmp(data_tmp);
-
-	printf(" ================================================== \n");
-	printf("|============  TAMBAH DATA MAHASISWA  =============|\n");
-	printf("|==================================================|\n");
-	printf("    Tambah Data \n");
-	printf("    * Masukan jumlah pembelian  : "); scanf("%d", statusPembelian);
-
-    statusPembelian = cek_jumlah_pembelian(data, data_tmp, jumlah);
-    while(statusPembelian == 1){
-        printf("      jumlah_pembelian sudah ada ! Masukan jumlah_pembelian yang berbeda : ");
-        scanf("%d", &data.jumlah_pembelian);
-        statusPembelian = cek_jumlah_pembelian(data, data_tmp, jumlah);
-    }
-
-	printf("    * Masukan plat : ");
-    scanf("%[^\n]", &data.plat);
-    fflush(stdin);
-
-	    statusPlat = validasiplat(data.plat);
-    while(statusPlat == 0){
-        printf("      Format Nama salah ! Masukan Nama dengan benar : ");
-        scanf("%[^\n]", &data.plat);
-        fflush(stdin);
-        statusPlat = validasiplat(data.plat);
-    }
-
-    proses_tambah_data(data);
-
-    printf("\n");
-    printf("    Hasil\n");
-    printf("    * jumlah_pembelian  : %d\n", data.jumlah_pembelian);
-    printf("    * plat : %s\n", data.plat);
-    printf("      Data tersebut berhasil ditambahkan\n");
-	printf(" ==================================================\n");
-    pilihan_ulang();
-}
-
-void lihat_data_pembeli(){
-    struct contact data_tmp[100];
-    setDefaultDataTmp(data_tmp);
-
-    int jumlah = proses_read_data_tmp(data_tmp);
-	printf(" ================================================== \n");
-	printf("|===============  DATA Pembelian  =================|\n");
-	printf("|==================================================|\n");
-    printf("    Daftar Data Pembeli :\n");
-    printf("\n");
-
-    proses_lihat_data(data_tmp, jumlah);
-
-    if(jumlah != 1 || data_tmp[0].jumlah_pembelian != 0){
-        printf("\n");
-        printf("    Jumlah Pembelian : %d\n", jumlah);
-    }
-	printf(" ==================================================\n");
-    pilihan_ulang(2);
-}
-
-void perbaharui_data_pembeli(){
-    int statusjumlah_pembelian, statusplat;
-    struct contact data_edit;
-    struct contact data_tmp[100];
-    setDefaultDataTmp(data_tmp);
-    int jumlah = proses_read_data_tmp(data_tmp);
-    int nomorEdit = 0;
-		printf(" ================================================== \n");
-		printf("|==========  PERBAHARUI DATA MAHASISWA  ===========|\n");
-		printf("|==================================================|\n");
-		printf("    Daftar Data Mahasiswa :\n");
-		printf("\n");
-
-    	proses_lihat_data(data_tmp, jumlah);
-
-		printf("\n");
-		if(jumlah != 1 || data_tmp[0].jumlah_pembelian != 0){
-			printf("    Data nomor brapa yang ingin anda perbaharui ? (1 - %d) : ", jumlah);
-			nomorEdit = input(0, 0, jumlah);
-			nomorEdit = nomorEdit - 1;
-
-			printf("\n");
-			printf("    Input Pembaharuan Data\n");
-			printf("    * Masukan jumlah_pembelian  : ");
-			scanf("%d", data_edit.jumlah_pembelian);
-
-			printf("    * Masukan plat : ");
-			scanf("%[^\n]", &data_edit.plat);
-			fflush(stdin);
-
-			printf("\n");
-
-			proses_perbaharui_data(data_edit, data_tmp, jumlah, nomorEdit);
-
-			printf("    Data berhasil diperbaharui\n");
-		}else if(jumlah == 1 && data_tmp[0].jumlah_pembelian == 0){
-			printf("   Masukan data terlebih dahulu\n");
-		}
-		printf(" ==================================================\n");
-		pilihan_ulang(3);
-}
-
-void menghapus_data_pembeli(){
-    struct contact data_tmp[100];
-    setDefaultDataTmp(data_tmp);
-    int jumlah = proses_read_data_tmp(data_tmp);
-    int nomorHapus = 0;
-    int yakinHapus = 0;
-		printf(" ================================================== \n");
-		printf("|=============  HAPUS DATA MAHASISWA  =============|\n");
-		printf("|==================================================|\n");
-		printf("    Daftar Data Pembeli :\n");
-		printf("\n");
-
-    	proses_lihat_data(data_tmp, jumlah);
-
-		printf("\n");
-		if(jumlah != 1 || data_tmp[0].jumlah_pembelian != 0){
-			printf("    Pilih data yang ingin anda hapus!! (1 - %d) : ", jumlah);
-			nomorHapus = input(0, 0, jumlah);
-			nomorHapus = nomorHapus - 1;
-			yakinHapus = pertanyaanHapus();
-			printf("\n");
-			if(yakinHapus == 1){
-				proses_hapus_data(data_tmp, jumlah, nomorHapus);
-				printf("    Data telah di hapus\n");
-			}else{
-				printf("    Data tidak di hapus\n");
-			}
-		}else if(jumlah == 1 && data_tmp[0].jumlah_pembelian == 0){
-			printf("   Masukan data terlebih dahulu\n");
-		}
-		printf(" ==================================================\n");
-		pilihan_ulang(4);
-}
-
-void keluar(){
-	system("cls");
-	system("exit");
-}
 
 float validasi(){
 	float inputan;
@@ -545,7 +413,7 @@ void menu_pilihan(){
 			jenis_fasilitas();
 		}
 		else if(inputan == 2){
-			menu_pembeli();
+			data_pembeli();
 		}
 		else{
 			printf("\n==============================");
@@ -554,8 +422,12 @@ void menu_pilihan(){
 			printf("\n==============================");
 		}
 }
-void menu_pembeli(){
-	int inputan;
+
+void data_pembeli(){  //list.name (Menampung data Nomer DK) // list.ph (menampung jumlah liter)
+					  //datapembeli.dll (untuk menampung isi data plat nomer dan jumlah liter)
+char query[20],name[20];
+FILE *fp, *ft;
+int i,n,ch,l,found;
 		system("cls");
 		printf("======================================================\n");
         printf("||              Program kalkulator pada             ||\n");
@@ -563,27 +435,100 @@ void menu_pembeli(){
         printf("||__________________________________________________||\n");
 		printf("||                                                  ||\n");
         printf("|| Pilih Kapasitas CC Pada Kendaraan :              ||\n");
-        printf("||    1. Lihat Data Pembeli                         ||\n");
-        printf("||    2. Tambah Data Pembeli                        ||\n");
-        printf("||    3. Perbaharui Data Pembeli                    ||\n");
-        printf("||    4. Menghapus Data Pembeli                     ||\n");
+        printf("||    1. Tambah Data Pembeli                        ||\n");
+        printf("||    2. Lihat Data Pembeli                         ||\n");
+        printf("||    3. Menghapus Data Pembeli                     ||\n");
         printf("||                                         0. keluar||\n");
         printf("======================================================\n");
-        printf(">> "); scanf("%d", &inputan);
-
-			if(inputan == 1){
-				lihat_data_pembeli();
-			}
-			else if(inputan == 2){
-				tambah_data_pembeli();
-			}
-			else if(inputan == 3){
-				perbaharui_data_pembeli();
-			}
-			else if(inputan == 4){
-				menghapus_data_pembeli();
-			}
+    scanf("%d",&ch);
+    switch(ch)
+    {
+    case 0:
+        printf("\n\n\t\tApakah Yakin Deck Ingin Keluar?");
+        break;
+    case 1: //menambahkan data pembeli
+        system("cls");
+        fp=fopen("datapembeli.dll","a"); //file untuk menyimpan inputan data pembeli
+        for (;;)
+        {
+            fflush(stdin);
+            	printf(" ================================================== \n");
+				printf("|============   TAMBAH DATA PEMBELI   =============|\n");
+				printf("|==================================================|\n");
+            printf("Untuk Keluar Silakan Masukan Blank Screen Kemudian Enter \nMasukan Plat Nomer:");
+            scanf("%[^\n]",&list.name);
+            if(stricmp(list.name,"")==0 || stricmp(list.name," ")==0)
+                break;
+            fflush(stdin);
+            printf("Masukan Jumlah Pembelian (Liter):");
+            scanf("%ld",&list.ph);
+            fflush(stdin);
+            fwrite(&list,sizeof(list),1,fp);
+        }
+        fclose(fp);
+        break;
+    case 2: //Menampilkan data pembeli
+        system("cls");
+       	printf(" ================================================== \n");
+		printf("|===============  DATA Pembelian  =================|\n");
+		printf("|==================================================|\n");
+        for(i=97; i<=122; i=i+1)
+        {
+            fp=fopen("datapembeli.dll","r");
+            fflush(stdin);
+            found=0;
+            while(fread(&list,sizeof(list),1,fp)==1)
+            {
+                if(list.name[0]==i || list.name[0]==i-32)
+                {
+                    printf("\nPlat Nomer\t: %s\nJumlah Pembelian (Liter): %ld\n",list.name,
+                           list.ph);
+                    found++;
+                }
+            }
+            if(found!=0)
+            {
+                found++;
+            }
+            fclose(fp);
+        }
+        break;
+    case 3: // Menghapus Data Pembali
+        system("cls");
+        fflush(stdin);
+        		printf(" ================================================== \n");
+				printf("|===============  HAPUS DATA PEMBELI  =============|\n");
+				printf("|==================================================|\n");
+        printf("\nMasukan plat nomer Yang Ingin Dihapus?:");
+        scanf("%[^\n]",&name);
+        fp=fopen("datapembeli.dll","r");
+        ft=fopen("temp.dat","w");
+        while(fread(&list,sizeof(list),1,fp)!=0)
+            if (stricmp(name,list.name)!=0)
+                fwrite(&list,sizeof(list),1,ft);
+        fclose(fp);
+        fclose(ft);
+        remove("datapembeli.dll");
+        rename("temp.dat","datapembeli.dll");
+        break;
+    default:
+        printf("Tidak Ditemukan");
+        break;
+    }
+ 	printf("\n\n\nSilakan Masukan:\n\n\t[1] Main Menu\t\t[0] Exit\n");
+    scanf("%d",&ch);
+    switch (ch)
+    {
+    case 1:
+        data_pembeli();
+    case 0:
+        break;
+    default:
+        printf("Masukan Menu Antara 1 dan 2");
+        break;
+    }
 }
+
 
 
 void jenis_fasilitas(){
